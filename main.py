@@ -32,6 +32,7 @@ def calculate_markov_chain():
     ca = CellularAutomata(raster2, v_raster, mc)
     ca.create_neibourhood()
     ca.fit_model()
+    ca.export_predicted()
 
 
 if __name__ == '__main__':

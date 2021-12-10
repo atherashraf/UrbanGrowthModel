@@ -27,8 +27,9 @@ class CellularAutomata:
         self.raster = raster
         self.v_raster = v_raster
         self.kernel_size = 3
-        self.focused_index = ((self.kernel_size + 1) / 2) - 1
+        self.focused_index = int(((self.kernel_size + 1) / 2) - 1)
         self.can_predict = False
+        self.predicted = None
         self.class_val = {"water": 1,
                           "builtup": 2,
                           "veg": 3,
@@ -48,15 +49,6 @@ class CellularAutomata:
                 else:
                     neighborhood[i].append(euc)
         self.neighborhood = np.array(neighborhood)
-        print(self.neighborhood)
-        # fig = plt.figure(figsize=(8, 6))
-        # plt.gray()
-        # this = plt.pcolormesh(self.neighborhood)
-        # plt.xticks(np.arange(0, 14, 1.0))
-        # plt.yticks(np.arange(0, 14, 1.0))
-        # plt.colorbar(this)
-        # fig.savefig(os.path.join(OUTPUT_PATH, 'neighborhood.png'))
-        # plt.show()
 
     # s is the stochastic disturbance term
     def S(self, a1):
@@ -96,15 +88,17 @@ class CellularAutomata:
     def fit_model(self):
         try:
             if self.can_predict:
-                m, n = self.data.shape
                 margin = math.ceil(self.kernel_size / 2)
                 data = np.array(self.raster.get_data_array())
                 self.predicted = deepcopy(data)
+                m, n = data.shape
                 for y in range(margin, m - (margin - 1)):
                     for x in range(margin, n - (margin - 1)):
                         kernel = data[y - (margin - 1):y + margin, x - (margin - 1):x + (margin)]
                         predicted_val = self.get_predicted_value(kernel)
                         self.predicted[y, x] = predicted_val
+
+                self.check_accuracy()
             else:
                 print("error:", self.error_msg)
         except Exception as e:
@@ -112,7 +106,9 @@ class CellularAutomata:
 
     def get_predicted_value(self, kernel):
         focused_value = kernel[self.focused_index][self.focused_index]
-        if focused_value == self.class_val["water"]:
+        if focused_value == np.nan:
+            return focused_value
+        elif focused_value == self.class_val["water"]:
             return focused_value
         elif focused_value == self.class_val["builtup"]:
             return focused_value
