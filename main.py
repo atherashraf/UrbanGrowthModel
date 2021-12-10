@@ -19,6 +19,7 @@ def calculate_markov_chain():
     r_path3 = os.path.join(MEDIA_PATH, 'data/2019/Reclass_c2019.tif')
     raster1 = RioRaster(r_path1, no_data_value=127)
     raster2 = RioRaster(r_path2, no_data_value=127)
+    v_raster = RioRaster(r_path3, no_data_value=127)
 
     # raster1.make_conincident(raster2)
 
@@ -28,7 +29,9 @@ def calculate_markov_chain():
     mc.calculate_trans_probability()
 
     # cellular automata
-    ca = CellularAutomata(mc)
+    ca = CellularAutomata(raster2, v_raster, mc)
+    ca.create_neibourhood()
+    ca.fit_model()
 
 
 if __name__ == '__main__':
