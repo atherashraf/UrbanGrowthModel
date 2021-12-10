@@ -1,0 +1,4 @@
+water =1
+ 21 22 23 24 developed = 2
+ 31 barren = 4
+ All other vegetation = 3
