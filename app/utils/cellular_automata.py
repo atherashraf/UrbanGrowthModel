@@ -135,9 +135,9 @@ class CellularAutomata:
                     self.v_raster.get_data_array() == self.class_val["builtup"]).astype(
                 float)) != 0)) / sum(
             sum(self.v_raster.get_data_array() == self.class_val["builtup"]))) * 100
-        print("Actual growth: %d, Predicted growth: %d" % (actual_builtup, predicted_builtup))
+        print(f"Actual growth: {actual_builtup}, Predicted growth: {predicted_builtup}")
         # Spatial Accuracy
-        print("Spatial accuracy: %f" % (spatial_accuracy))
+        print(f"Spatial accuracy: {spatial_accuracy}")
         return spatial_accuracy
 
     def export_predicted(self, output_filename="predicted_image.tif"):
